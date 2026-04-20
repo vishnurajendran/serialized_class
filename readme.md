@@ -146,7 +146,6 @@ for (auto f : fields)
 This system is inspired by:
 
 * Unreal Engine’s `UPROPERTY`
-* Reflection systems in modern game engines
 ---
 
 ## Author Notes
