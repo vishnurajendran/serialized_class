@@ -69,7 +69,7 @@ class EngineSettings : public DataBase
     DECLARE_FIELD(screenHeight, int, 1080)
     DECLARE_FIELD(fullscreen, bool, false)
     DECLARE_FIELD(volume, float, 1.0f)
-    DECLARE_FIELD(title, std::string, "Meteor Engine")
+    DECLARE_FIELD(title, std::string, "My Game")
 };
 ```
 
