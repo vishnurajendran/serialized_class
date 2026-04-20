@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.30)
 project(serialized_class)
+
 set(CMAKE_CXX_STANDARD 20)
+
 include(FetchContent)
 
 # ---------------------------------------------------------------------------
@@ -14,13 +16,29 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(pugixml)
 
-add_executable(serialized_class main.cpp
-        src/data/field_base.h
+# ---------------------------------------------------------------------------
+# LIBRARY
+# ---------------------------------------------------------------------------
+add_library(serialized_class
         src/data/serialized_class_base.cpp
-        src/data/serialized_class_base.h
-        src/Test/test_data.cpp
-        src/Test/test_data.h
-        src/data/field.h
 )
-target_link_libraries(serialized_class PRIVATE
-        pugixml)
+
+# Headers (for IDE visibility, optional but nice)
+target_sources(serialized_class PUBLIC
+        FILE_SET HEADERS
+        BASE_DIRS src
+        FILES
+        src/data/field_base.h
+        src/data/field.h
+        src/data/serialized_class_base.h
+)
+
+# Include dirs
+target_include_directories(serialized_class PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)
+
+# Link deps
+target_link_libraries(serialized_class PUBLIC
+        pugixml
+)
