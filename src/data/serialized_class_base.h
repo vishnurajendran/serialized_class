@@ -37,6 +37,7 @@ protected:
     // Override hooks
     // Called by serialiseToNode / deserialise FromNode after the fields vector
     // is processed. Override in subclasses to handle data that lives outside
+    // the fields vector (e.g. MSpatialEntity's raw transform members).
     virtual void onSerialise(pugi::xml_node& /*node*/)        {}
     virtual void onDeserialise(const pugi::xml_node& /*node*/) {}
 
