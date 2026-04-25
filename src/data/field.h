@@ -1,11 +1,13 @@
 //
-// Created by ssj5v on 20-04-2026.
+// field.h
+// Generic serializable field. Supports int, float, double, bool, std::string.
 //
 
 #ifndef FIELD_H
 #define FIELD_H
 #include "field_base.h"
 #include <type_traits>
+
 template<typename T>
 struct Field : public FieldBase
 {
@@ -15,9 +17,15 @@ struct Field : public FieldBase
         : FieldBase(registry, n), value(def)
     {}
 
+    // Accessors
     const T& get() const { return value; }
-    void set(const T& v) { value = v; }
+    T&       get()       { return value; }
+    void     set(const T& v) { value = v; }
 
+    // Assignment from T so DECLARE_FIELD members feel like plain fields to callers
+    Field& operator=(const T& v) { value = v; return *this; }
+
+    // Serialization
     void write(pugi::xml_node& parent) const override
     {
         parent.append_child(name.c_str()).text().set(value);
@@ -40,4 +48,5 @@ struct Field : public FieldBase
             value = node.text().as_string();
     }
 };
-#endif //FIELD_H
+
+#endif // FIELD_H
