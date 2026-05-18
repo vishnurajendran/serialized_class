@@ -5,6 +5,8 @@
 
 #ifndef FIELD_H
 #define FIELD_H
+#include <functional>
+
 #include "field_base.h"
 #include <type_traits>
 
@@ -12,6 +14,8 @@ template<typename T>
 struct Field : public FieldBase
 {
     T value;
+    std::function<void(const T&)> onChangeCallback;
+
 
     Field(std::vector<FieldBase*>& registry, const std::string& n, const T& def)
         : FieldBase(registry, n), value(def)
@@ -20,7 +24,8 @@ struct Field : public FieldBase
     // Accessors
     const T& get() const { return value; }
     T&       get()       { return value; }
-    void     set(const T& v) { value = v; }
+    void     set(const T& v) { value = v; if (onChangeCallback) onChangeCallback(); }
+    void     setOnChangeCallback(std::function<void(const T&)> v) { onChangeCallback = v; }
 
     // Assignment from T so DECLARE_FIELD members feel like plain fields to callers
     Field& operator=(const T& v) { value = v; return *this; }
