@@ -13,10 +13,11 @@
 template<typename T>
 struct Field : public FieldBase
 {
-    T value;
+private:
     std::function<void(const T&)> onChangeCallback;
+    T value;
 
-
+public:
     Field(std::vector<FieldBase*>& registry, const std::string& n, const T& def)
         : FieldBase(registry, n), value(def)
     {}
