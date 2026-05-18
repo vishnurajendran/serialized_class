@@ -43,6 +43,9 @@ protected:
 public:
     virtual ~SerializedClassBase() = default;
 
+    // Expose the field list, for any system that wants it.
+    const std::vector<FieldBase*>& getFields() const { return fields; }
+
     // Node-based API (used by scene serializer & entity hierarchy)
     // Write all fields + hook data INTO an already-existing xml_node.
     void serialiseToNode(pugi::xml_node& node)
