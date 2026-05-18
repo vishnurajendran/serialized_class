@@ -25,7 +25,7 @@ public:
     // Accessors
     const T& get() const { return value; }
     T&       get()       { return value; }
-    void     set(const T& v) { value = v; if (onChangeCallback) onChangeCallback(); }
+    void     set(const T& v) { value = v; if (onChangeCallback) onChangeCallback(value); }
     void     setOnChangeCallback(std::function<void(const T&)> v) { onChangeCallback = v; }
 
     // Assignment from T so DECLARE_FIELD members feel like plain fields to callers
