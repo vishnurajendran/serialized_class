@@ -34,7 +34,10 @@ public:
     // Serialization
     void write(pugi::xml_node& parent) const override
     {
-        parent.append_child(name.c_str()).text().set(rawValue);
+        if constexpr (std::is_enum_v<T>)
+            parent.append_child(name.c_str()).text().set(static_cast<int>(rawValue));
+        else
+            parent.append_child(name.c_str()).text().set(rawValue);
     }
 
     void load(const pugi::xml_node& parent) override
@@ -42,7 +45,9 @@ public:
         auto node = parent.child(name.c_str());
         if (!node) return;
 
-        if constexpr (std::is_same_v<T, int>)
+        if constexpr (std::is_enum_v<T>)
+            rawValue = static_cast<T>(node.text().as_int());
+        else if constexpr (std::is_same_v<T, int>)
             rawValue = node.text().as_int();
         else if constexpr (std::is_same_v<T, float>)
             rawValue = node.text().as_float();
