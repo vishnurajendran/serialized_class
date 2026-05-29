@@ -13,6 +13,7 @@ class test_data : public SerializedClassBase
     DECLARE_FIELD(fullscreen, bool, false)
     DECLARE_FIELD(volume, float, 1.0f)
     DECLARE_FIELD(title, std::string, "Test title")
+    DECLARE_LIST_FIELD(text, std::string, { "Test text" })
 };
 
 #endif //TESTDATA_H

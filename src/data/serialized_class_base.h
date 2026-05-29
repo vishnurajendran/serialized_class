@@ -4,13 +4,14 @@
 //
 // Usage:
 //   class MyClass : public SerializedClassBase {
-//       DECLARE_FIELD(speed,   float,       1.0f)
-//       DECLARE_FIELD(label,   std::string, "default")
+//       DECLARE_FIELD(speed,     float,      1.0f)
+//       DECLARE_FIELD(label,     std::string,"default")
+//       DECLARE_LIST_FIELD(tags, SString,    {})
 //   };
 //
 // Subclasses can also override onSerialise / onDeserialise to manually
-// write/read data that doesn't fit the DECLARE_FIELD macro (e.g. raw
-// transform members, arrays, maps).
+// write/read data that doesn't fit the DECLARE_FIELD / DECLARE_LIST_FIELD
+// macros (e.g. raw transform members, fixed-size arrays, maps).
 //
 
 #ifndef SERIALISEDCLASSBASE_H
@@ -21,32 +22,37 @@
 #include <vector>
 #include <pugixml.hpp>
 #include "field.h"
+#include "list_field.h"   // brings in ListField<T> and DECLARE_LIST_FIELD
 
-// DECLARE_FIELD
+// ─── DECLARE_FIELD ───────────────────────────────────────────────────────────
 // Declares a Field<type> member that self-registers with the fields vector.
-// Subclasses just place this in their class body; no further wiring needed.
 #define DECLARE_FIELD(fieldName, type, defaultValue) \
 public: \
     Field<type> fieldName { fields, #fieldName, defaultValue };
+
+// DECLARE_LIST_FIELD is defined in list_field.h (included above).
+// It mirrors DECLARE_FIELD exactly:
+//   DECLARE_LIST_FIELD(fieldName, type, defaultValue)
+// where defaultValue is a valid std::vector<type> initialiser, e.g. {}.
 
 class SerializedClassBase
 {
 protected:
     std::vector<FieldBase*> fields;
 
-    // Override hooks
-    // Called by serialiseToNode / deserialise FromNode after the fields vector
-    // is processed. Override in subclasses to handle data that lives outside
+    // Override hooks — called by serialiseToNode / deserialiseFromNode after
+    // the fields vector is processed.
     virtual void onSerialise(pugi::xml_node& /*node*/)        {}
     virtual void onDeserialise(const pugi::xml_node& /*node*/) {}
 
 public:
     virtual ~SerializedClassBase() = default;
 
-    // Expose the field list, for any system that wants it.
+    // Expose the field list for external systems (editor, inspector, etc.).
     const std::vector<FieldBase*>& getFields() const { return fields; }
 
-    // Node-based API (used by scene serializer & entity hierarchy)
+    // ---- Node-based API ----------------------------------------------------
+
     // Write all fields + hook data INTO an already-existing xml_node.
     void serialiseToNode(pugi::xml_node& node)
     {
@@ -63,7 +69,8 @@ public:
         onDeserialise(node);
     }
 
-    // File-based API (standalone objects, editor save-as, etc.)
+    // ---- File-based API ----------------------------------------------------
+
     void serialiseToFile(const std::string& filePath)
     {
         pugi::xml_document doc;

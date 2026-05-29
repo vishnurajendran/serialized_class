@@ -21,6 +21,7 @@ FetchContent_MakeAvailable(pugixml)
 # ---------------------------------------------------------------------------
 add_library(serialized_class
         src/data/serialized_class_base.cpp
+        src/data/list_field.h
 )
 
 # Headers (for IDE visibility, optional but nice)
