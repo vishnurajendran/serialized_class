@@ -56,7 +56,7 @@ struct ListFieldElementIO
         if constexpr (std::is_enum_v<T>)
             node.text().set(static_cast<int>(value));
         else if constexpr (std::is_same_v<T, std::string>)
-            // pugixml's text().set() has no std::string overload — must pass c_str().
+            // pugixml text().set() has no std::string overload — must pass c_str().
             node.text().set(value.c_str());
         else
             // Covers int, float, double, bool — pugixml has direct overloads for all.
@@ -147,7 +147,14 @@ public:
     {
         pugi::xml_node listNode = parent.append_child(name.c_str());
         for (const T& item : rawValue)
-            ListFieldElementIO<T>::writeElement(listNode.append_child("item"), item);
+        {
+            // append_child() returns a temporary pugi::xml_node by value.
+            // It must be stored in a named variable before being passed to
+            // writeElement — a non-const lvalue reference cannot bind to an
+            // rvalue (temporary).
+            pugi::xml_node itemNode = listNode.append_child("item");
+            ListFieldElementIO<T>::writeElement(itemNode, item);
+        }
     }
 
     void load(const pugi::xml_node& parent) override
