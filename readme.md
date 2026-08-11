@@ -40,7 +40,7 @@ The container (`DataBase`) simply:
 ## Structure
 
 ```
-DataBase
+SerializedClassBase
  ├── std::vector<FieldBase*> fields
  ├── Serialise()
  └── Deserialize()
@@ -63,7 +63,7 @@ Field<T>
 ### 1. Declare your data class
 
 ```cpp
-class EngineSettings : public DataBase
+class EngineSettings : public SerializedClassBase
 {
     DECLARE_FIELD(screenWidth, int, 1920)
     DECLARE_FIELD(screenHeight, int, 1080)
