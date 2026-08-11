@@ -30,7 +30,7 @@ Each field:
 * Knows how to **read/write itself**
 * Exposes a simple `get()` / `set()` interface
 
-The container (`DataBase`) simply:
+The container (`SerializedClassBase`) simply:
 
 * Iterates all fields
 * Serializes or deserializes them
@@ -110,7 +110,7 @@ settings.Serialise();
 ## How It Works
 
 * `DECLARE_FIELD(...)` creates a `Field<T>` instance
-* The field registers itself into `DataBase::fields`
+* The field registers itself into `SerializedClassBase::fields`
 * Serialization loops over all registered fields:
 
 ```cpp
